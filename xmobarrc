@@ -1,4 +1,5 @@
-Config { font = "-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*"
+Config { -- font = "-terminal-*-*-*-*-14-*-*-*-*-*-*-*"
+         font = "xft:Droid Sans Mono for Powerline:style=Regular:pixelsize=12"
        , borderColor = "white"
        , border = BottomB
        , bgColor = "black"
@@ -17,11 +18,10 @@ Config { font = "-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*"
                     , Run Memory ["-t","Mem: <usedratio>%"] 10
                     , Run Swap [] 10
                     , Run Com "uname" ["-s","-r"] "" 36000
-    		    , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
+                    , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                     , Run StdinReader
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%StdinReader% }{ %cpu% | %memory% * %swap% | %dynnetwork% | <fc=#ee9a00>%date%</fc> |  %uname% ☻"
+       , template = "%StdinReader% }{ %cpu% | %memory% * %swap% | <fc=#ee9a00>%date%</fc>"
        }
-
