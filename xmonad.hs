@@ -3,20 +3,28 @@ import System.Exit
 import XMonad
 import XMonad.Config.Azerty
 import XMonad.Hooks.DynamicLog
+import XMonad.Layout.Grid
 
 import qualified XMonad.StackSet as W
 
 import Data.Monoid
 import qualified Data.Map as M
 
+main :: IO ()
+main = statusBar myBar myPP toggleStrutsKey myConfig  >>=
+       xmonad
+
+myConfig = defaultConfig { keys = bepoKeys
+			 , terminal = "konsole"
+			 , workspaces = ["1","2","3","4","5","6","chat","mail","web"]
+			 , manageHook = manageHook defaultConfig <+> myManageHook
+			 , layoutHook = myLayoutHook
+			 }
+
 myManageHook :: Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll
 	[ className =? "qemu-system-x86_64" --> doFloat
  	]
-
-main :: IO ()
-main = statusBar myBar myPP toggleStrutsKey myConfig  >>=
-       xmonad
 
 myPP = xmobarPP { ppOutput = putStrLn
 		, ppCurrent = xmobarColor "orange" "" . wrap "[" "]"
@@ -28,6 +36,8 @@ myPP = xmobarPP { ppOutput = putStrLn
 toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 myBar = "xmobar"
+
+myLayoutHook = layoutHook defaultConfig ||| Grid
 
 numBepo = [0x22,0xab,0xbb,0x28,0x29,0x40,0x2b,0x2d,0x2f,0x2a]
 -- numAzerty = [0x26,0xe9,0x22,0x27,0x28,0x2d,0xe8,0x5f,0xe7,0xe0]
@@ -69,12 +79,3 @@ bepoKeys conf@(XConfig {modMask = modm}) = M.fromList $
     [((m .|. modm, k), windows $ f i)
         | (i, k) <- zip (workspaces conf) num
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
-    
-
---myKeys c = bepoKeys c `M.union` keys defaultConfig c
-
-myConfig = defaultConfig { keys = bepoKeys
-			 , terminal = "konsole"
-			 , workspaces = ["1","2","3","4","5","6","chat","mail","web"]
-			 , manageHook = manageHook defaultConfig <+> myManageHook
-			 }
