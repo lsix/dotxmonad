@@ -4,6 +4,7 @@ import XMonad
 import XMonad.Config.Azerty
 import XMonad.Hooks.DynamicLog
 import XMonad.Layout.Grid
+import XMonad.Layout.NoBorders
 
 import qualified XMonad.StackSet as W
 
@@ -37,7 +38,7 @@ toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 myBar = "xmobar"
 
-myLayoutHook = layoutHook defaultConfig ||| Grid
+myLayoutHook = layoutHook defaultConfig ||| Grid ||| noBorders Full
 
 numBepo = [0x22,0xab,0xbb,0x28,0x29,0x40,0x2b,0x2d,0x2f,0x2a]
 -- numAzerty = [0x26,0xe9,0x22,0x27,0x28,0x2d,0xe8,0x5f,0xe7,0xe0]
