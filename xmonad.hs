@@ -5,6 +5,8 @@ import XMonad.Config.Azerty
 import XMonad.Hooks.DynamicLog
 import XMonad.Layout.Grid
 import XMonad.Layout.NoBorders
+-- import XMonad.Actions.Volume
+import Graphics.X11.ExtraTypes.XF86
 
 import qualified XMonad.StackSet as W
 
@@ -75,6 +77,13 @@ bepoKeys conf@(XConfig {modMask = modm}) = M.fromList $
 
     , ((modm .|. shiftMask, xK_e     ), io exitSuccess) -- %! Quit xmonad
     , ((modm              , xK_e     ), spawn "if type xmonad; then xmonad --recompile && xmonad --restart; else xmessage xmonad not in \\$PATH: \"$PATH\"; fi") -- %! Restart xmonad
+
+    , ((0, xF86XK_AudioLowerVolume), spawn "amixer set Master 5%-")
+    , ((0, xF86XK_AudioRaiseVolume), spawn "amixer set Master 5%+")
+    , ((0, xF86XK_AudioMute), spawn "amixer set Master toggle")
+    -- , ((0, xF86XK_AudioLowerVolume), lowerVolume 5 >> return ()) -- spawn "amixer set Master 5%-"
+    -- , ((0, xF86XK_AudioRaiseVolume), raiseVolume 5 >> return ()) -- spawn "amixer set Master 5%+"
+    -- , ((0, xF86XK_AudioMute), toggleMute >> return ())           -- spawn "amixer toggle"
     ]
     ++
     [((m .|. modm, k), windows $ f i)
