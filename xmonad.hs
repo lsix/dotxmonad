@@ -3,6 +3,7 @@ import System.Exit
 import XMonad
 import XMonad.Config.Azerty
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.Script
 import XMonad.Layout.Grid
 import XMonad.Layout.NoBorders
 
@@ -26,11 +27,12 @@ main =
     ewmh $
     pagerHints $
     defaultConfig { keys = bepoKeys
-                  , terminal = "konsole"
+                  , terminal = "urxvt"
                   , workspaces = ["1","2","3","4","5","6","chat","mail","web"]
                   , manageHook = myManageHook <+> manageDocks
                   , layoutHook = avoidStruts myLayoutHook
                   , handleEventHook = (handleEventHook defaultConfig) <+> docksEventHook
+		  , startupHook = execScriptHook "startup"
                   }
  
 myManageHook :: Query (Data.Monoid.Endo WindowSet)

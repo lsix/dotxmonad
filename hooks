@@ -1,0 +1,13 @@
+#! /usr/bin/env bash
+
+function startup()
+{
+	xrdb -load "${HOME}/.Xressources"
+	taffybar &
+}
+
+case $1 in
+	startup)
+		startup
+		;;
+esac
