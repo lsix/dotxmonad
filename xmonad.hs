@@ -6,37 +6,37 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Layout.Grid
 import XMonad.Layout.NoBorders
 
+import XMonad.Hooks.EwmhDesktops (ewmh)
+import System.Taffybar.Hooks.PagerHints (pagerHints)
+import XMonad.Hooks.ManageDocks
+
+import System.Taffybar.XMonadLog ( dbusLog )
+
+import Graphics.X11.ExtraTypes.XF86
+
 import qualified XMonad.StackSet as W
 
 import Data.Monoid
 import qualified Data.Map as M
 
+
 main :: IO ()
-main = statusBar myBar myPP toggleStrutsKey myConfig  >>=
-       xmonad
-
-myConfig = defaultConfig { keys = bepoKeys
-			 , terminal = "konsole"
-			 , workspaces = ["1","2","3","4","5","6","chat","mail","web"]
-			 , manageHook = manageHook defaultConfig <+> myManageHook
-			 , layoutHook = myLayoutHook
-			 }
-
+main =
+    xmonad $
+    ewmh $
+    pagerHints $
+    defaultConfig { keys = bepoKeys
+                  , terminal = "konsole"
+                  , workspaces = ["1","2","3","4","5","6","chat","mail","web"]
+                  , manageHook = myManageHook <+> manageDocks
+                  , layoutHook = avoidStruts myLayoutHook
+                  , handleEventHook = (handleEventHook defaultConfig) <+> docksEventHook
+                  }
+ 
 myManageHook :: Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll
-	[ className =? "qemu-system-x86_64" --> doFloat
- 	]
-
-myPP = xmobarPP { ppOutput = putStrLn
-		, ppCurrent = xmobarColor "orange" "" . wrap "[" "]"
-		, ppHiddenNoWindows = xmobarColor "grey" ""
-		, ppTitle   = xmobarColor "green"  "" . shorten 40
-		, ppVisible = wrap "(" ")"
-		, ppUrgent  = xmobarColor "red" "yellow" . wrap "<" ">"
-		}
-toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
-
-myBar = "xmobar"
+        [ className =? "qemu-system-x86_64" --> doFloat
+        ]
 
 myLayoutHook = layoutHook defaultConfig ||| Grid ||| noBorders Full
 
@@ -75,6 +75,14 @@ bepoKeys conf@(XConfig {modMask = modm}) = M.fromList $
 
     , ((modm .|. shiftMask, xK_e     ), io exitSuccess) -- %! Quit xmonad
     , ((modm              , xK_e     ), spawn "if type xmonad; then xmonad --recompile && xmonad --restart; else xmessage xmonad not in \\$PATH: \"$PATH\"; fi") -- %! Restart xmonad
+
+    , ((0, xF86XK_AudioLowerVolume), spawn "amixer set Master 5%-")
+    , ((0, xF86XK_AudioRaiseVolume), spawn "amixer set Master 5%+")
+    , ((0, xF86XK_AudioMute), spawn "amixer set Master toggle")
+    , ((modm, xK_b     ), sendMessage ToggleStruts)
+    -- , ((0, xF86XK_AudioLowerVolume), lowerVolume 5 >> return ()) -- spawn "amixer set Master 5%-"
+    -- , ((0, xF86XK_AudioRaiseVolume), raiseVolume 5 >> return ()) -- spawn "amixer set Master 5%+"
+    -- , ((0, xF86XK_AudioMute), toggleMute >> return ())           -- spawn "amixer toggle"
     ]
     ++
     [((m .|. modm, k), windows $ f i)
