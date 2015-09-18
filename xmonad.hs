@@ -1,4 +1,5 @@
 import System.Exit
+import Data.Ratio ((%))
 
 import XMonad
 import XMonad.Config.Azerty
@@ -6,6 +7,7 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.Script
 import XMonad.Layout.Grid
 import XMonad.Layout.NoBorders
+import XMonad.Layout.IM
 
 import XMonad.Hooks.EwmhDesktops (ewmh)
 import System.Taffybar.Hooks.PagerHints (pagerHints)
@@ -40,7 +42,7 @@ myManageHook = composeAll
         [ className =? "qemu-system-x86_64" --> doFloat
         ]
 
-myLayoutHook = layoutHook defaultConfig ||| Grid ||| noBorders Full
+myLayoutHook = layoutHook defaultConfig ||| Grid ||| noBorders Full ||| withIM (1%6) (Role "roster") Grid
 
 numBepo = [0x22,0xab,0xbb,0x28,0x29,0x40,0x2b,0x2d,0x2f,0x2a]
 -- numAzerty = [0x26,0xe9,0x22,0x27,0x28,0x2d,0xe8,0x5f,0xe7,0xe0]
