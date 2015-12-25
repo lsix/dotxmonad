@@ -1,5 +1,6 @@
 import System.Taffybar
 
+import System.Taffybar.Battery
 import System.Taffybar.Systray
 import System.Taffybar.TaffyPager
 import System.Taffybar.SimpleClock
@@ -28,13 +29,15 @@ main = do
                                                       ]
                                   , graphLabel = Just "cpu"
                                   }
+      batcfg = defaultBarConfig $ \l -> (1 - l, l, 0)
   let clock = textClockNew Nothing "<span fgcolor='orange'>%a %b %_d %H:%M</span>" 1
       mem = pollingGraphNew memCfg 1 memCallback
       cpu = pollingGraphNew cpuCfg 0.5 cpuCallback
+      batbar = batteryBarNew batcfg 30
       tray = systrayNew
       pager = taffyPagerNew defaultPagerConfig
       note = notifyAreaNew defaultNotificationConfig
   defaultTaffybar defaultTaffybarConfig { startWidgets = [ pager, note ]
-                                        , endWidgets = [ tray, clock, mem, cpu ]
+                                        , endWidgets = [ batbar, tray, clock, mem, cpu ]
                                         }
 
