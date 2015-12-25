@@ -4,6 +4,7 @@ function startup()
 {
 	xrdb -load "${HOME}/.Xressources"
 	taffybar &
+	nm-applet &
 }
 
 case $1 in
