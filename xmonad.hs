@@ -84,9 +84,7 @@ bepoKeys conf@(XConfig {modMask = modm}) = M.fromList $
     , ((0, xF86XK_AudioRaiseVolume), spawn "amixer set Master 5%+")
     , ((0, xF86XK_AudioMute), spawn "amixer set Master toggle")
     , ((modm, xK_b     ), sendMessage ToggleStruts)
-    -- , ((0, xF86XK_AudioLowerVolume), lowerVolume 5 >> return ()) -- spawn "amixer set Master 5%-"
-    -- , ((0, xF86XK_AudioRaiseVolume), raiseVolume 5 >> return ()) -- spawn "amixer set Master 5%+"
-    -- , ((0, xF86XK_AudioMute), toggleMute >> return ())           -- spawn "amixer toggle"
+    , ((modm .|. shiftMask, xK_agrave), spawn "i3lock -c 000000")
     ]
     ++
     [((m .|. modm, k), windows $ f i)
