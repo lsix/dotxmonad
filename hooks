@@ -2,9 +2,16 @@
 
 function startup()
 {
-	xrdb -load "${HOME}/.Xressources"
-	taffybar &
-	nm-applet &
+	##xrdb -load "${HOME}/.Xressources"
+
+	#if [[ -S /var/run/user/$UID/gnupg/S.gpg-agent.ssh ]]
+	#then
+	#	SSH_AUTH_SOCK=/var/run/user/$UID/gnupg/S.gpg-agent.ssh
+	#else
+	#	eval $(gpg-agent --daemon -s)
+	#fi
+	#taffybar &
+	#nm-applet &
 }
 
 case $1 in

@@ -8,12 +8,13 @@ import XMonad.Hooks.Script
 import XMonad.Layout.Grid
 import XMonad.Layout.NoBorders
 import XMonad.Layout.IM
+import XMonad.Hooks.ManageHelpers
 
 import XMonad.Hooks.EwmhDesktops (ewmh)
-import System.Taffybar.Hooks.PagerHints (pagerHints)
+-- import System.Taffybar.Hooks.PagerHints (pagerHints)
 import XMonad.Hooks.ManageDocks
 
-import System.Taffybar.XMonadLog ( dbusLog )
+-- import System.Taffybar.XMonadLog ( dbusLog )
 
 import Graphics.X11.ExtraTypes.XF86
 
@@ -27,9 +28,9 @@ main :: IO ()
 main =
     xmonad $
     ewmh $
-    pagerHints $
+    -- pagerHints $
     defaultConfig { keys = bepoKeys
-                  , terminal = "urxvt"
+                  , terminal = "konsole"
                   , workspaces = ["1","2","3","4","5","6","chat","mail","web"]
                   , manageHook = myManageHook <+> manageDocks
                   , layoutHook = avoidStruts myLayoutHook
@@ -40,6 +41,7 @@ main =
 myManageHook :: Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll
         [ className =? "qemu-system-x86_64" --> doFloat
+        , isInProperty "_NET_WM_WINDOW_TYPE" "_NET_WM_WINDOW_TYPE_NOTIFICATION" --> doFloat
         ]
 
 myLayoutHook = layoutHook defaultConfig ||| Grid ||| noBorders Full ||| withIM (1%6) (Role "roster") Grid
@@ -51,7 +53,8 @@ num = numBepo
 bepoKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 bepoKeys conf@(XConfig {modMask = modm}) = M.fromList $
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf) -- %! Launch terminal
-    , ((modm,               xK_p     ), spawn "dmenu_run") -- %! Launch dmenu
+    -- , ((modm,               xK_p     ), spawn "dmenu_run") -- %! Launch dmenu
+    , ((modm, xK_p), spawn "krunner")
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun") -- %! Launch gmrun
     , ((modm .|. shiftMask, xK_c     ), kill) -- %! Close the focused window
 
@@ -77,7 +80,8 @@ bepoKeys conf@(XConfig {modMask = modm}) = M.fromList $
 
     , ((modm, xK_f), withFocused $ windows . W.sink) -- %! Push window back into tiling
 
-    , ((modm .|. shiftMask, xK_e     ), io exitSuccess) -- %! Quit xmonad
+    --, ((modm .|. shiftMask, xK_e     ), io exitSuccess) -- %! Quit xmonad
+    , ((modm .|. shiftMask, xK_q), spawn "dcop kdesktop default logout")
     , ((modm              , xK_e     ), spawn "if type xmonad; then xmonad --recompile && xmonad --restart; else xmessage xmonad not in \\$PATH: \"$PATH\"; fi") -- %! Restart xmonad
 
     , ((0, xF86XK_AudioLowerVolume), spawn "amixer set Master 5%-")
