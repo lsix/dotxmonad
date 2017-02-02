@@ -1,5 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 import System.Exit
 import Data.Ratio ((%))
+import Data.Int
 
 import XMonad
 import XMonad.Config.Azerty
@@ -9,6 +12,8 @@ import XMonad.Layout.Grid
 import XMonad.Layout.NoBorders
 import XMonad.Layout.IM
 import XMonad.Hooks.ManageHelpers
+import DBus
+import DBus.Client
 
 import XMonad.Hooks.EwmhDesktops (ewmh)
 -- import System.Taffybar.Hooks.PagerHints (pagerHints)
@@ -23,6 +28,25 @@ import qualified XMonad.StackSet as W
 import Data.Monoid
 import qualified Data.Map as M
 
+
+lockScreen :: IO ()
+lockScreen = do
+  client <- connectSession
+  callNoReply client (methodCall "/ScreenSaver" "org.freedesktop.ScreenSaver" "Lock")
+   {  methodCallDestination = Just "org.freedesktop.ScreenSaver"
+   }
+  return ()
+
+logOut :: IO ()
+logOut = do
+  client <- connectSession
+  callNoReply client (methodCall "/KSMServer" "org.kde.KSMServerInterface" "logout")
+   { methodCallDestination = Just "org.kde.ksmserver"
+   , methodCallBody = [ toVariant (1 :: Int32)
+                      , toVariant (0 :: Int32)
+                      , toVariant (30 :: Int32)
+                      ]
+   }
 
 main :: IO ()
 main =
@@ -81,7 +105,9 @@ bepoKeys conf@(XConfig {modMask = modm}) = M.fromList $
     , ((modm, xK_f), withFocused $ windows . W.sink) -- %! Push window back into tiling
 
     --, ((modm .|. shiftMask, xK_e     ), io exitSuccess) -- %! Quit xmonad
+    , ((modm .|. shiftMask, xK_e     ), io logOut) -- %! Quit xmonad
     , ((modm .|. shiftMask, xK_q), spawn "dcop kdesktop default logout")
+    , ((modm .|. shiftMask, xK_l), io lockScreen)
     , ((modm              , xK_e     ), spawn "if type xmonad; then xmonad --recompile && xmonad --restart; else xmessage xmonad not in \\$PATH: \"$PATH\"; fi") -- %! Restart xmonad
 
     , ((0, xF86XK_AudioLowerVolume), spawn "amixer set Master 5%-")
