@@ -58,7 +58,7 @@ main =
                   , workspaces = ["1","2","3","4","5","6","chat","mail","web"]
                   , manageHook = myManageHook <+> manageDocks
                   , layoutHook = avoidStruts myLayoutHook
-                  , handleEventHook = (handleEventHook defaultConfig) <+> docksEventHook
+                  , handleEventHook = handleEventHook defaultConfig <+> docksEventHook
 		  , startupHook = execScriptHook "startup"
                   }
  
@@ -75,7 +75,7 @@ numBepo = [0x22,0xab,0xbb,0x28,0x29,0x40,0x2b,0x2d,0x2f,0x2a]
 num = numBepo
 
 bepoKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
-bepoKeys conf@(XConfig {modMask = modm}) = M.fromList $
+bepoKeys conf@XConfig {modMask = modm} = M.fromList $
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf) -- %! Launch terminal
     -- , ((modm,               xK_p     ), spawn "dmenu_run") -- %! Launch dmenu
     , ((modm, xK_p), spawn "krunner")
